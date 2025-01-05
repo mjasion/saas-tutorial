@@ -11,6 +11,7 @@ export default function SyncUserWithConvex() {
 
     useEffect(() => {
         if (!user) return;
+        console.log("Syncing user with Convex...");
 
         const syncUser = async () => {
             try {
