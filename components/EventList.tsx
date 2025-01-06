@@ -1,36 +1,47 @@
 "use client";
 
-
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import Spinner from "@/components/Spinner";
-import EventCard from "@/components/EventCard";
+import {createClient} from "@/utils/supabase/client";
+import {useEffect, useState} from "react";
+import {CalendarDays} from "lucide-react";
+import type { Tables } from "@/supabase/database.types";
 
-import { CalendarDays, Ticket } from "lucide-react";
+type Event = Tables<'events'>;
+
 
 export default function EventList() {
-    const events = useQuery(api.events.get);
+    const [events, setEvents] = useState<Array<Event> | null>(null);
+
+    const supabase = createClient()
+
+    useEffect(() => {
+        const getData = async () => {
+            const { data } = await supabase.from('events').select().returns<Array<Event>>()
+            setEvents(data)
+        }
+        getData()
+    }, [])
+
 
     if (!events) {
         return (
             <div className="min-h-[400px] flex items-center justify-center">
-                <Spinner />
+                <Spinner/>
             </div>
         );
     }
 
-
     const upcomingEvents = events
-        .filter((event) => event.eventDate > Date.now())
-        .sort((a, b) => a.eventDate - b.eventDate);
-
+        .filter((event) => new Date(event.eventdate).getTime() > Date.now())
+        .sort((a, b) => new Date(a.eventdate).getTime() - new Date(b.eventdate).getTime())
     const pastEvents = events
-        .filter((event) => event.eventDate <= Date.now())
-        .sort((a, b) => b.eventDate - a.eventDate);
+        .filter((event) => new Date(event.eventdate).getTime() <= Date.now())
+        .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
 
     console.log("upcomingEvents", upcomingEvents);
     console.log("pastEvents", pastEvents);
-
+    //     {JSON.stringify(pastEvents, null, 2)}
+    // </div>
     return <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -49,36 +60,6 @@ export default function EventList() {
                 </div>
             </div>
         </div>
-
-        {/* Upcoming Events Grid */}
-        {upcomingEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {upcomingEvents.map((event) => (
-                    <EventCard key={event._id} eventId={event._id} />
-                ))}
-            </div>
-        ) : (
-            <div className="bg-gray-50 rounded-lg p-12 text-center mb-12">
-                <Ticket className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900">
-                    No upcoming events
-                </h3>
-                <p className="text-gray-600 mt-1">Check back later for new events</p>
-            </div>
-        )}
-
-        {/* Past Events Section */}
-        {pastEvents.length > 0 && (
-            <>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Past Events</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {pastEvents.map((event) => (
-                        <EventCard key={event._id} eventId={event._id} />
-                    ))}
-                </div>
-            </>
-        )}
-
 
     </div>;
 }

@@ -1,5 +1,5 @@
-import { query, mutation } from "./_generated/server";
-import { v } from "convex/values";
+import {mutation, query} from "./_generated/server";
+import {v} from "convex/values";
 
 export const getUserTicketForEvent = query({
     args: {
@@ -7,14 +7,12 @@ export const getUserTicketForEvent = query({
         userId: v.string(),
     },
     handler: async (ctx, { eventId, userId }) => {
-        const ticket = await ctx.db
+        return await ctx.db
             .query("tickets")
             .withIndex("by_user_event", (q) =>
                 q.eq("userId", userId).eq("eventId", eventId)
             )
             .first();
-
-        return ticket;
     },
 });
 
