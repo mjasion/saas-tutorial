@@ -1,16 +1,10 @@
 "use client";
 
-import {useRouter} from "next/navigation";
-
-import {createClient} from "@/utils/supabase/client";
 import type {Tables} from "@/supabase/database.types";
-import {useEffect, useState} from 'react'
 
 type Event = Tables<'events'>; // No changes here
 
 export default function EventCard({event}: { event: Event }) {
-    // const {user} = useUser();
-    const router = useRouter();
 
     console.log(event.name)
     // const event: Event = events?.find((event) => event.id === eventId);
@@ -24,7 +18,6 @@ export default function EventCard({event}: { event: Event }) {
 
     const imageUrl = null
 
-    const isPastEvent = false
 
     if (imageUrl == null) {
         return (

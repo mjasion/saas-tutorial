@@ -23,9 +23,9 @@ export default function EventList({serverEvents}: { serverEvents: Event[] }) {
                 setEvents(events.filter(event => event.id !== payload.old.id))
                 return
             }
-            let updatedEvent = payload.new as Event;
+            const updatedEvent = payload.new as Event;
             console.log('Change received!', updatedEvent.name)
-            let newEvents = events.some(event => event.id === updatedEvent.id) ?
+            const newEvents = events.some(event => event.id === updatedEvent.id) ?
                 events.map(event => event.id === updatedEvent.id ? updatedEvent : event) :
                 [...events, updatedEvent];
             setEvents(newEvents)
@@ -88,6 +88,14 @@ export default function EventList({serverEvents}: { serverEvents: Event[] }) {
                 <p className="text-gray-600 mt-1">Check back later for new events</p>
             </div>
         )}
+
+        {pastEvents.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                {pastEvents.map((event) => (
+                    <EventCard key={event.id} event={event}/>
+                ))}
+            </div>
+        ) : (<div></div>)}
 
 
     </div>;
