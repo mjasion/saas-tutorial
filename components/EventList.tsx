@@ -48,7 +48,7 @@ export default function EventList({serverEvents}: { serverEvents: Event[] }) {
         .sort((a, b) => new Date(a.eventdate).getTime() - new Date(b.eventdate).getTime())
     const pastEvents = events
         .filter((event) => new Date(event.eventdate).getTime() <= Date.now())
-        .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
+        .sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime());
 
     //     {JSON.stringify(pastEvents, null, 2)}
     // </div>

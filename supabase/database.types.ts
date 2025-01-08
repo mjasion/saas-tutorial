@@ -24,7 +24,7 @@ export type Database = {
         }
         Insert: {
           description: string
-          eventdate:
+          eventdate: string
           id?: number
           imagestorageid?: string | null
           is_cancelled?: boolean | null
